@@ -1,6 +1,11 @@
-import React from 'react';
+import React from "react";
+import { UserConsumer, UserContext } from "./UserContext";
 
 class UserMenu extends React.Component {
+  //context type is only available on classes
+  // we import the entire UserContext and destructure what we need for the consumer below
+  static contextType = UserContext;
+
   state = {
     menuVisible: false
   };
@@ -8,11 +13,11 @@ class UserMenu extends React.Component {
   avatarRef = React.createRef();
 
   componentDidMount() {
-    document.addEventListener('click', this.hideMenu);
+    document.addEventListener("click", this.hideMenu);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('click', this.hideMenu);
+    document.removeEventListener("click", this.hideMenu);
   }
 
   hideMenu = e => {
@@ -29,19 +34,21 @@ class UserMenu extends React.Component {
     }));
   };
 
+  // we used contextType to consume the entire Context without having to wrap our render with a Consumer
   render() {
+    const { user, onLogout } = this.context;
     return (
       <div className="UserMenu">
         <img
           className="UserAvatar"
           alt="User avatar"
-          src={this.props.currentUser.avatar}
+          src={user.avatar}
           onClick={this.toggleMenu}
           ref={this.avatarRef}
         />
         {this.state.menuVisible && (
           <ul>
-            <li onClick={this.props.onLogout}>Logout</li>
+            <li onClick={onLogout}>Logout</li>
           </ul>
         )}
       </div>

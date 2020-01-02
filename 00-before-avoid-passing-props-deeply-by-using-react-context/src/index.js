@@ -1,32 +1,31 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import LoginPage from './LoginPage';
-import MainPage from './MainPage';
-import './index.css';
+import React from "react";
+import ReactDOM from "react-dom";
+import LoginPage from "./LoginPage";
+import MainPage from "./MainPage";
+import { UserProvider, UserConsumer } from "./UserContext";
+import { EmailProvider } from "./EmailContext";
+import { NotificationProvider } from "./NotificationContext";
+import "./index.css";
 
-class Root extends React.Component {
-  state = {
-    currentUser: null
-  };
+//we also move over all the class methods to handle state / login to the provider class
 
-  handleLogin = user => {
-    this.setState({ currentUser: user });
-  };
-
-  handleLogout = () => {
-    this.setState({ currentUser: null });
-  };
-
-  render() {
-    return this.state.currentUser ? (
-      <MainPage
-        currentUser={this.state.currentUser}
-        onLogout={this.handleLogout}
-      />
-    ) : (
-      <LoginPage onLogin={this.handleLogin} />
-    );
-  }
+//we move the provider value into its own content provider
+// and destructure user for the consumer to use
+function Root() {
+  return (
+    <UserConsumer>
+      {({ user }) => (user ? <MainPage /> : <LoginPage />)}
+    </UserConsumer>
+  );
 }
 
-ReactDOM.render(<Root />, document.querySelector('#root'));
+ReactDOM.render(
+  <NotificationProvider>
+    <UserProvider>
+      <EmailProvider>
+        <Root />
+      </EmailProvider>
+    </UserProvider>
+  </NotificationProvider>,
+  document.querySelector("#root")
+);
